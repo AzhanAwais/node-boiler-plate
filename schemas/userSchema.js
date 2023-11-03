@@ -18,4 +18,4 @@ const userSchema = joi.object({
     platformType: joi.string(),
 })
 
-module.export = userSchema
+module.exports = userSchema

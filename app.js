@@ -25,7 +25,7 @@ class App {
         this.app.use(express.json({ extended: false }))
     }
 
-    initErrorMiddleware() {
+    initErrorMiddleware(){
         this.app.use(errorMiddleware)
     }
 
