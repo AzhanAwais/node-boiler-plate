@@ -1,7 +1,7 @@
 const validations = {
     emailMax: 64,
-    nameMin: 5,
-    nameMax: 32,
+    fullNameMin: 5,
+    fullNameMax: 32,
     usernameMin: 3,
     usernameMax: 32,
     phoneMin: 11,
@@ -15,9 +15,9 @@ const validationsText = {
     emailRequired: "Email is required",
     emailUnique: "Email already exists",
 
-    nameMin: `Name: Maximum ${validations.nameMin} characters are allowed`,
-    nameMax: `Name: Maximum ${validations.nameMax} characters are allowed`,
-    nameRequired: `Name is required`,
+    fullNameMin: `Name: Maximum ${validations.fullNameMin} characters are allowed`,
+    fullNameMax: `Name: Maximum ${validations.fullNameMax} characters are allowed`,
+    fullNameRequired: `Name is required`,
 
     usernameMin: `Username: Maximum ${validations.usernameMin} characters are allowed`,
     usernameMax: `Username: Maximum ${validations.usernameMax} characters are allowed`,

@@ -7,14 +7,12 @@ const userSchema = new mongoose.Schema({
         required: false,
         minLength: [validations.nameMin, validationsText.usernameMin],
         maxLength: [validations.nameMax, validationsText.usernameMax],
-        trim: true
     },
-    name: {
+    fullname: {
         type: String,
-        required: [true, validationsText.nameRequired],
-        minLength: [validations.nameMin, validationsText.nameMin],
-        maxLength: [validations.nameMax, validationsText.nameMax],
-        trim: true
+        required: [true, validationsText.fullNameRequired],
+        minLength: [validations.fullNameMin, validationsText.fullNameMin],
+        maxLength: [validations.fullNameMax, validationsText.fullNameMax],
     },
     email: {
         type: String,
@@ -22,6 +20,7 @@ const userSchema = new mongoose.Schema({
         maxLength: [validations.emailMax, validationsText.emailRequired],
         unique: [true, validationsText.emailUnique],
         lowercase: true,
+        trim: true
     },
     password: {
         type: String,
@@ -33,14 +32,14 @@ const userSchema = new mongoose.Schema({
         maxLength: [validations.phoneMax, validationsText.phoneMin],
         required: false
     },
-    age: {
-        type: Number,
+    dob: {
+        type: Date,
         required: false
     },
     bio: {
         type: String,
-        maxLength: [validations.bioMax, validationsText.bioMax],
         required: false,
+        maxLength: [validations.bioMax, validationsText.bioMax],
     },
     profileImage: {
         type: String,
@@ -55,17 +54,14 @@ const userSchema = new mongoose.Schema({
     isVerified: {
         type: Boolean,
         default: false,
-        required: false
     },
     isFirstLogin: {
         type: Boolean,
         default: false,
-        required: false
     },
     isSocialLogin: {
         type: Boolean,
         default: false,
-        required: false
     },
     clientToken: {
         type: String,
