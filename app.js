@@ -2,25 +2,30 @@ const express = require("express")
 const mongoose = require('mongoose')
 const errorMiddleware = require("./middlewares/errorMiddleware")
 const AuthRoute = require("./routes/authRoute")
+const { PORT, DB_URL } = require("./config/index")
 
 class App {
     app
     port
     db_url
 
-    constructor(port, db_url) {
+    constructor() {
         this.app = express()
-        this.port = port
-        this.db_url = db_url
+        this.port = PORT
+        this.db_url = DB_URL
 
+        this.initMiddlewares()
         this.initDb()
         this.initRoutes()
-        this.initMiddlewares()
+        this.initErrorMiddleware()
     }
 
     initMiddlewares() {
         this.app.use(express.json())
-        this.app.use(express.urlencoded({ extended: false }))
+        this.app.use(express.json({ extended: false }))
+    }
+
+    initErrorMiddleware() {
         this.app.use(errorMiddleware)
     }
 

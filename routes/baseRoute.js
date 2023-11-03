@@ -1,7 +1,7 @@
 const express = require("express")
 const BaseController = require("../controllers/baseController")
 
-class BaseRouter {
+class BaseRoute {
     model
 
     constructor(model) {
@@ -17,4 +17,4 @@ class BaseRouter {
     }
 }
 
-module.exports = BaseRouter
+module.exports = BaseRoute

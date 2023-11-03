@@ -1,16 +1,14 @@
 const express = require("express")
-const BaseRouter = require("./baseRoute")
+const BaseRoute = require("./BaseRoute")
 const User = require("../models/User")
 const AuthController = require("../controllers/authController")
 
-
-class AuthRoute extends BaseRouter {
+class AuthRoute extends BaseRoute {
     constructor() {
         super(User)
         this.router = new express.Router()
-        const authController = new AuthController()
 
-        this.router.post("/register", authController.register.bind(this))
+        this.router.post("/register", AuthController.register.bind(this))
     }
 }
 
