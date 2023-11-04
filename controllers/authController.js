@@ -1,6 +1,8 @@
 const BaseController = require("./baseController")
 const User = require("../models/User")
-const UserService = require("../services/userService")
+const AuthService = require("../services/authService")
+const userSchema = require("../schemas/userSchema")
+const messages = require("../constants/messages")
 
 class AuthController extends BaseController {
     constructor() {
@@ -9,12 +11,19 @@ class AuthController extends BaseController {
 
     async register(req, res, next) {
         try {
-            const user = await UserService.createUser(req.body)
+            const { error } = userSchema.validate(req.body)
+            if (error) {
+                return next(error)
+            }
 
-            res.status(200).send("hellow")
+            const user = await AuthService.createUser(req.body)
+            res.status(200).send({
+                data: user,
+                message: messages.userRegister
+            })
         }
         catch (e) {
-            next(e)
+            return next(e)
         }
     }
 

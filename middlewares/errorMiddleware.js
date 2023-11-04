@@ -4,27 +4,24 @@ const { ValidationError } = require("joi")
 const errorHandler = (err, req, res, next) => {
     let status = 500
     let data = {
-        message: err.message
+        message: "Internal server error"
     }
 
-    if (err instanceof CustomError) {
-        status = err.status
-
+    if (err instanceof ValidationError) {
+        status = 422
         data = {
             message: err.message
         }
     }
 
-    if (err instanceof ValidationError) {
-        status = 400
-
+    if (err instanceof CustomError) {
+        status = err.status
         data = {
             message: err.message
         }
     }
 
     data.stack = err.stack
-    data.status = status
 
     return res.status(status).json(data)
 }
