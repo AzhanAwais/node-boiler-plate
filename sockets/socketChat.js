@@ -1,13 +1,16 @@
 const SocketConnection = require("../sockets/socketConnection")
 
-class SocketChat extends SocketConnection{
+class SocketChat extends SocketConnection {
     constructor(server) {
         super(server)
+
         this.initSocketEvents()
     }
 
     initSocketEvents() {
-        this.io.on("connection", () => {
+        const chatIo = this.io.of("/chat")
+
+        chatIo.on("connection", (socket) => {
             console.log("asdjaskdhskajds")
         })
     }
