@@ -30,8 +30,8 @@ class AuthController extends BaseController {
             }
             const user = await AuthService.createUser(req.body)
             res.status(200).send({
+                message: "User registerd successfully",
                 data: user,
-                message: "User registerd successfully"
             })
         }
         catch (e) {
@@ -56,11 +56,11 @@ class AuthController extends BaseController {
             }
             const token = JwtService.generateToken(user)
             res.status(200).send({
+                message: "User login successfully",
                 data: {
                     user,
                     token
                 },
-                message: "User login successfully"
             })
 
         }
@@ -82,11 +82,11 @@ class AuthController extends BaseController {
             if (user) {
                 const token = JwtService.generateToken(user)
                 res.status(200).send({
+                    message: "User login successfully",
                     data: {
                         user,
                         token
                     },
-                    message: "User login successfully"
                 })
             }
             reqBody.isVerified = true
@@ -95,11 +95,11 @@ class AuthController extends BaseController {
             const token = JwtService.generateToken(newUser)
 
             res.status(200).send({
+                message: "User registerd successfully",
                 data: {
                     user: newUser,
                     token
                 },
-                message: "User registerd successfully"
             })
         }
         catch (e) {
@@ -125,8 +125,8 @@ class AuthController extends BaseController {
             await EmailService.sendEmail(user.email, EmailService.getEmailSubject(emailTypes.forgotPassword), EmailService.getEmailHtml(user, otp, emailTypes.forgotPassword))
 
             res.status(200).send({
+                message: "Otp code has been sent to your email",
                 data: null,
-                message: "Otp code has been sent to your email"
             })
         }
         catch (e) {
@@ -150,8 +150,8 @@ class AuthController extends BaseController {
             await user.save()
 
             res.status(200).send({
+                message: "Password reset successfully",
                 data: user,
-                message: "Password reset successfully"
             })
         }
         catch (e) {
@@ -177,8 +177,8 @@ class AuthController extends BaseController {
             await EmailService.sendEmail(user.email, EmailService.getEmailSubject(emailTypes.resendOtp), EmailService.getEmailHtml(user, otp, emailTypes.resendOtp))
 
             res.status(200).send({
+                message: "Otp code has been sent to your email",
                 data: null,
-                message: "Otp code has been sent to your email"
             })
         }
         catch (e) {
@@ -211,9 +211,9 @@ class AuthController extends BaseController {
 
             res.status(200).send({
                 data: {
+                    message: "Otp has been verified",
                     token
                 },
-                message: "Otp has been verified"
             })
         }
         catch (e) {
@@ -228,8 +228,8 @@ class AuthController extends BaseController {
             AuthController.blackListedTokens.push(token)
 
             res.status(200).send({
+                message: "User logout successfully",
                 data: null,
-                message: "User logout successfully"
             })
         }
         catch (e) {

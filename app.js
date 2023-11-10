@@ -1,9 +1,12 @@
 const express = require("express")
 const mongoose = require('mongoose')
+const cors = require("cors")
+const path = require("path")
 const errorMiddleware = require("./middlewares/errorMiddleware")
 const { PORT, DB_URL } = require("./config/index")
 const AuthRoute = require("./routes/authRoute")
 const UserRoute = require("./routes/UserRoute")
+const UploadFileRoute = require("./routes/uploadFileRoute")
 
 class App {
     app
@@ -24,6 +27,8 @@ class App {
     initMiddlewares() {
         this.app.use(express.json())
         this.app.use(express.json({ extended: false }))
+        this.app.use(cors({ origin: "*" }))
+        this.app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
     }
 
     initErrorMiddleware() {
@@ -33,7 +38,7 @@ class App {
     initRoutes() {
         this.app.use(new AuthRoute().router)
         this.app.use(new UserRoute().router)
-
+        this.app.use(new UploadFileRoute().router)
     }
 
     initDb() {
