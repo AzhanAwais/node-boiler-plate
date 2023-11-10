@@ -2,25 +2,27 @@ const express = require("express")
 const mongoose = require('mongoose')
 const cors = require("cors")
 const path = require("path")
+const { createServer } = require('http')
 const errorMiddleware = require("./middlewares/errorMiddleware")
 const { PORT, DB_URL } = require("./config/index")
 const AuthRoute = require("./routes/authRoute")
 const UserRoute = require("./routes/UserRoute")
 const UploadFileRoute = require("./routes/uploadFileRoute")
+const SocketChat = require("./sockets/socketChat")
 
 class App {
-    app
-    port
-    db_url
+    app; port; db_url; httpServer; io;
 
     constructor() {
         this.app = express()
+        this.httpServer = createServer(this.app)
         this.port = PORT
         this.db_url = DB_URL
 
         this.initMiddlewares()
         this.initDb()
         this.initRoutes()
+        this.initSockets()
         this.initErrorMiddleware()
     }
 
@@ -49,8 +51,12 @@ class App {
         })
     }
 
+    initSockets(){
+        const socketChat = new SocketChat(this.httpServer)
+    }
+
     initServer() {
-        this.app.listen(this.port, () => {
+        this.httpServer.listen(this.port, () => {
             console.log(`listen port ${this.port}`)
         })
     }
