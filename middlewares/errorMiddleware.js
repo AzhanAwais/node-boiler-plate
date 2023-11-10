@@ -1,7 +1,7 @@
 const CustomError = require("../services/customError")
 const { ValidationError } = require("joi")
 
-const errorHandler = (err, req, res, next) => {
+const errorMiddleware = (err, req, res, next) => {
     let status = 500
     let data = {
         message: "Internal server error"
@@ -10,7 +10,7 @@ const errorHandler = (err, req, res, next) => {
     if (err instanceof ValidationError) {
         status = 422
         data = {
-            message: err.message
+            message: err.message.replace(/\\/g, '').replace(/"/g, '')
         }
     }
 
@@ -26,4 +26,4 @@ const errorHandler = (err, req, res, next) => {
     return res.status(status).json(data)
 }
 
-module.exports = errorHandler
+module.exports = errorMiddleware

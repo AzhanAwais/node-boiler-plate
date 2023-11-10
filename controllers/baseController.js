@@ -1,12 +1,16 @@
 class BaseController {
-    model
-
-    constructor(model) {
+    constructor(model, validationSchema) {
         this.model = model
+        this.validationSchema = validationSchema
     }
 
     async create(req, res, next) {
+        console.log("=--=-")
         try {
+            const { error } = this.validationSchema.validate(req.body)
+            if (error) {
+                next(error)
+            }
             const data = await this.model.create(req.body)
             res.status(201).send({ data, message: "Record created successfully" })
         }
@@ -39,7 +43,7 @@ class BaseController {
     async update(req, res, next) {
         try {
             const { id } = req.params
-            const data = await this.model.findOneAndUpdate({ _id: id })
+            const data = await this.model.findOneAndUpdate({ _id: id }, { new: true })
             res.status(200).send({ data, message: "Record updated successfully" })
         }
         catch (e) {

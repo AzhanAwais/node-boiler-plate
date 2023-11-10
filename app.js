@@ -1,8 +1,9 @@
 const express = require("express")
 const mongoose = require('mongoose')
 const errorMiddleware = require("./middlewares/errorMiddleware")
-const AuthRoute = require("./routes/authRoute")
 const { PORT, DB_URL } = require("./config/index")
+const AuthRoute = require("./routes/authRoute")
+const UserRoute = require("./routes/UserRoute")
 
 class App {
     app
@@ -25,12 +26,14 @@ class App {
         this.app.use(express.json({ extended: false }))
     }
 
-    initErrorMiddleware(){
+    initErrorMiddleware() {
         this.app.use(errorMiddleware)
     }
 
     initRoutes() {
-        this.app.use(AuthRoute.router)
+        this.app.use(new AuthRoute().router)
+        this.app.use(new UserRoute().router)
+
     }
 
     initDb() {

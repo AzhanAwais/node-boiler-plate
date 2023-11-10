@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     },
     fullname: {
         type: String,
-        required: [true, validationsText.fullNameRequired],
+        required: false,
         minLength: [validations.fullNameMin, validationsText.fullNameMin],
         maxLength: [validations.fullNameMax, validationsText.fullNameMax],
     },
@@ -24,7 +24,19 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, validationsText.passwordRequired],
+        required: false,
+    },
+    otp: {
+        code: {
+            type: String,
+            default: null,
+            minLength: [validations.otpMin, validationsText.otpMin],
+            maxLength: [validations.otpMax, validationsText.otpMax],
+        },
+        expiresIn: {
+            type: Date,
+            default: null
+        }
     },
     phone: {
         type: String,
@@ -55,7 +67,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    isFirstLogin: {
+    isProfileCompleted: {
         type: Boolean,
         default: false,
     },
