@@ -1,4 +1,6 @@
 const CustomError = require("../services/customError")
+const PaginationService = require("../services/paginationService")
+
 
 class BaseController {
     constructor(model, validationSchema, populateFields) {
@@ -14,7 +16,11 @@ class BaseController {
                 next(error)
             }
             const data = await this.model.create(req.body)
-            res.status(201).send({ data, message: "Record created successfully" })
+
+            res.status(201).send({
+                message: "Record created successfully",
+                data,
+            })
         }
         catch (e) {
             next(e)
@@ -23,46 +29,14 @@ class BaseController {
 
     async getAll(req, res, next) {
         try {
-            const deleteFromQuery = ["paginate", "page", "perPage", "sort", "sortBy"]
-            let data = []
-            let pagination = null
             const query = req.query
-            const findQuery = { ...req.query }
+            const paginationService = new PaginationService(this.model)
+            const { data, pagination } = await paginationService.addPagination(query)
 
-            for (const key in findQuery) {
-                if (deleteFromQuery.includes(key)) {
-                    delete findQuery[key]
-                }
-            }
-
-            const sortOrder = query.sort == 'asc' ? 1 : -1
-            const sort = sortOrder || 1
-            const sortBy = query.sortBy || "createdAt"
-
-            const queryBuilder = this.model.find(findQuery).sort({ [sortBy]: sort })
-
-            if (query.paginate) {
-                const page = parseInt(query.page) || 1
-                const perPage = parseInt(query.perPage) || 10
-                const skip = (page - 1) * perPage
-
-                queryBuilder.skip(skip).limit(perPage)
-
-                const totalRecords = await this.model.countDocuments()
-                const totalPages = Math.ceil(totalRecords / perPage)
-                pagination = { page, perPage, totalRecords, totalPages }
-            }
-
-            if (this.populateFields.length > 0) {
-                queryBuilder.populate(this.populateFields)
-            }
-
-            data = await queryBuilder.exec()
-
-            res.status(200).send({
+            res.status(200).json({
                 message: "Record fetch successfully",
-                data: data,
-                ...(pagination && { pagination }),
+                data,
+                pagination
             })
         }
         catch (e) {
@@ -74,6 +48,7 @@ class BaseController {
         try {
             const { id } = req.params
             const data = await this.model.findById({ _id: id })
+
             res.status(200).send({
                 message: "Record fetch successfully",
                 data,
@@ -87,6 +62,10 @@ class BaseController {
     async updateOne(req, res, next) {
         try {
             const { id } = req.params
+            const { error } = this.validationSchema.validate(req.body)
+            if (error) {
+                next(error)
+            }
             const data = await this.model.findByIdAndUpdate({ _id: id }, req.body, { new: true })
             if (!data) {
                 return next(new CustomError(404, "Record not found"))

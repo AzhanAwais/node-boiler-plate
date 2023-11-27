@@ -1,4 +1,4 @@
-const User = require("../models/User")
+const User = require("../models/Users")
 const bcrypt = require("bcryptjs")
 const CustomError = require("./customError")
 const EmailService = require("./emailService")
@@ -44,22 +44,13 @@ class AuthService {
         return user
     }
 
-    async findUserByToken(token) {
+    async findUserByToken(token = null) {
         const id = JwtService.verifyToken(token)
         const user = await User.findById({ _id: id })
         if (!user) {
             throw new CustomError(404, `User not found`)
         }
         return user
-    }
-
-    getTokenFormHeaders(headers) {
-        const authorizationHeader = headers['authorization'];
-        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer')) {
-            throw new CustomError(401, `Unauthorized or No token provided`)
-        }
-        const token = authorizationHeader.split(' ')[2]
-        return token
     }
 }
 

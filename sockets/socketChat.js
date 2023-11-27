@@ -3,7 +3,6 @@ const SocketConnection = require("../sockets/socketConnection")
 class SocketChat extends SocketConnection {
     constructor(server) {
         super(server)
-
         this.initSocketEvents()
     }
 
@@ -11,7 +10,11 @@ class SocketChat extends SocketConnection {
         const chatIo = this.io.of("/chat")
 
         chatIo.on("connection", (socket) => {
-            console.log("asdjaskdhskajds")
+
+            chatIo.on("joinRoom", (data) => {
+                const { sender, receiver } = data
+                const room = ""
+            })
         })
     }
 }

@@ -4,10 +4,6 @@ class OtpService {
         return otp
     }
 
-    verifyOtp(user, otp) {
-
-    }
-
     getExpiresIn() {
         return new Date(new Date().getTime() + 1 * 60 * 1000)
     }

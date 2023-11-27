@@ -2,7 +2,7 @@ const AuthService = require("../services/authService")
 const JwtService = require("../services/jwtService")
 const AuthController = require("../controllers/authController")
 const CustomError = require("../services/customError")
-const User = require("../models/User")
+const User = require("../models/Users")
 
 const authMiddleware = async (req, res, next) => {
     try {

@@ -38,11 +38,26 @@ const validationsText = {
     phoneRequried: `Phone number is requried`,
 
     bioMax: `Bio: Maximum ${validations.bioMax} characters are allowed`,
+
+    messageTypeRequired: `Message type is required`,
+    senderRequried: `Sender id is required`,
+    receiverRequired: `Receiver id type is required`,
+    userIdsRequired: "User ids is requried"
+
 }
 
 const roles = {
-    admin: "admin",
-    user: "user"
+    admin: 1,
+    user: 2
+}
+
+const messageType = {
+    text: 1,
+    image: 2,
+    video: 3,
+    audio: 4,
+    doc: 5,
+    startChat: 6
 }
 
 const emailTypes = {
@@ -55,5 +70,6 @@ module.exports = {
     validations,
     validationsText,
     roles,
-    emailTypes
+    emailTypes,
+    messageType
 }

@@ -1,5 +1,5 @@
 const BaseController = require("./baseController")
-const User = require("../models/User")
+const Users = require("../models/Users")
 const AuthService = require("../services/authService")
 const userRegisterSchema = require("../schemas/userRegisterSchema")
 const userLoginSchema = require("../schemas/userLoginSchema")
@@ -19,7 +19,7 @@ class AuthController extends BaseController {
     static blackListedTokens = []
 
     constructor() {
-        super(User)
+        super(Users)
     }
 
     async register(req, res, next) {
@@ -144,7 +144,7 @@ class AuthController extends BaseController {
             if (password != confirmPassword) {
                 return next(new CustomError(400, "Password and confirm password did not match"))
             }
-            const token = AuthService.getTokenFormHeaders(req.headers)
+            const token = JwtService.getTokenFormHeaders(req.headers)
             const user = await AuthService.findUserByToken(token)
             user.password = await bcrypt.hash(password, 10)
             await user.save()
@@ -224,7 +224,7 @@ class AuthController extends BaseController {
 
     async logout(req, res, next) {
         try {
-            const token = AuthService.getTokenFormHeaders(req.headers)
+            const token = JwtService.getTokenFormHeaders(req.headers)
             AuthController.blackListedTokens.push(token)
 
             res.status(200).send({

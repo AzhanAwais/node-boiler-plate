@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const { validations, validationsText, roles } = require("../constants/constants")
 
-const userSchema = new mongoose.Schema({
+const usersSchema = new mongoose.Schema({
     username: {
         type: String,
         required: false,
@@ -82,8 +82,12 @@ const userSchema = new mongoose.Schema({
     platformType: {
         type: String,
         required: false
-    }
+    },
+    onlineStatus: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true })
 
-const User = mongoose.model('User', userSchema)
-module.exports = User
+const Users = mongoose.model('Users', usersSchema)
+module.exports = Users

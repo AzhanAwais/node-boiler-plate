@@ -3,16 +3,24 @@ const jwt = require("jsonwebtoken")
 const { JWT_SECRET_KEY } = require("../config/index")
 
 class JwtService {
-    generateToken(user) {
+    generateToken(user = {}) {
         const { _id } = user
         const token = jwt.sign({ _id }, JWT_SECRET_KEY)
         return token
     }
 
-    verifyToken(token) {
+    verifyToken(token = null) {
         const { _id } = jwt.verify(token, JWT_SECRET_KEY)
-        console.log("=-=-=-", _id)
         return _id
+    }
+
+    getTokenFormHeaders(headers) {
+        const authorizationHeader = headers['authorization'];
+        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer')) {
+            throw new CustomError(401, `Unauthorized or No token provided`)
+        }
+        const token = authorizationHeader.split(' ')[2]
+        return token
     }
 
 }

@@ -1,4 +1,4 @@
-const User = require("../models/User")
+const User = require("../models/Users")
 const userRegisterSchema = require("../schemas/userRegisterSchema")
 const BaseRoute = require("./baseRoute")
 
