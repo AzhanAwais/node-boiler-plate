@@ -10,6 +10,9 @@ const validations = {
     bioMax: 320,
     otpMin: 4,
     otpMax: 4,
+    groupDescriptionMax: 120,
+    groupNameMin: 3,
+    groupNameMax: 32,
     groupDescriptionMax: 120
 }
 
@@ -31,14 +34,16 @@ const validationsText = {
     passwordMax: `Password: Maximum ${validations.passwordMax} characters are allowed`,
 
     OtpRequired: "Otp is required",
-    OtpMax: `Password: Minimum ${validations.otpMin} characters are allowed`,
-    OtpMax: `Password: Maximum ${validations.otpMax} characters are allowed`,
+    OtpMax: `Otp: Minimum ${validations.otpMin} characters are allowed`,
+    OtpMax: `Otp: Maximum ${validations.otpMax} characters are allowed`,
 
     phoneMin: `Phone: Minimum ${validations.phoneMin} digits are allowed`,
     phoneMax: `Phone: Maximum ${validations.phoneMax} digits are allowed`,
     phoneRequried: `Phone number is requried`,
 
-    groupDescriptionMax: `Phone: Maximum ${validations.groupDescriptionMax} characters are allowed`,
+    groupDescriptionMax: `Description: Maximum ${validations.groupDescriptionMax} characters are allowed`,
+    groupNameMin: `Name: Minimum ${validations.groupNameMin} characters are allowed`,
+    groupNameMax: `Name: Maximum ${validations.groupNameMax} characters are allowed`,
 
     bioMax: `Bio: Maximum ${validations.bioMax} characters are allowed`,
 

@@ -22,7 +22,7 @@ class ChatController {
                     data: newChat
                 })
             }
-            
+
             res.status(200).json({
                 message: "Chat fetch successfully",
                 data: chat
@@ -32,6 +32,10 @@ class ChatController {
         catch (e) {
             return next(e)
         }
+    }
+
+    async createGroup(req, res, next) {
+
     }
 }
 

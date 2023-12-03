@@ -7,19 +7,26 @@ const chatsSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    groupAdmins: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
-        required: false
-    }],
+    groupName: {
+        type: String,
+        required: false,
+        minLength: [validations.groupNameMin, validationsText.groupNameMin],
+        maxLength: [validations.groupNameMax, validationsText.groupNameMax],
+    },
     groupImage: {
         type: String,
         required: false
     },
     groupDescription: {
         type: String,
-        required: false
+        required: false,
+        maxLength: [validations.groupDescriptionMax, validationsText.groupDescriptionMax]
     },
+    groupAdmins: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",
+        required: false
+    }],
     blockedStatuses: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
@@ -75,12 +82,10 @@ const chatsSchema = new mongoose.Schema({
     sender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
-        required: [true, validationsText.senderRequried]
     },
     receiver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
-        required: [true, validationsText.receiverRequired]
     },
     messageType: {
         type: Number,

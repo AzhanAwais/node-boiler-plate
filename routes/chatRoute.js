@@ -9,6 +9,7 @@ class ChatRoute {
         this.chatController = new ChatController()
 
         this.router.post("/start-chat", authMiddleware, this.chatController.startChat.bind(this))
+        this.router.post("/create-group", authMiddleware, this.chatController.createGroup.bind(this))
     }
 }
 
