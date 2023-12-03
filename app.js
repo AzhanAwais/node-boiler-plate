@@ -9,9 +9,10 @@ const AuthRoute = require("./routes/authRoute")
 const UserRoute = require("./routes/UserRoute")
 const UploadFileRoute = require("./routes/uploadFileRoute")
 const SocketChat = require("./sockets/socketChat")
+const ChatRoute = require("./routes/chatRoute")
 
 class App {
-    app; port; db_url; httpServer; io;
+    app; port; db_url; httpServer;
 
     constructor() {
         this.app = express()
@@ -38,9 +39,10 @@ class App {
     }
 
     initRoutes() {
-        this.app.use(new AuthRoute().router)
-        this.app.use(new UserRoute().router)
-        this.app.use(new UploadFileRoute().router)
+        this.app.use("/api/auth", new AuthRoute().router)
+        this.app.use("/api/user", new UserRoute().router)
+        this.app.use("/api/file", new UploadFileRoute().router)
+        this.app.use("/api/chat", new ChatRoute().router)
     }
 
     initDb() {
@@ -51,7 +53,7 @@ class App {
         })
     }
 
-    initSockets(){
+    initSockets() {
         const socketChat = new SocketChat(this.httpServer)
     }
 

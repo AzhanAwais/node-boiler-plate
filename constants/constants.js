@@ -10,6 +10,7 @@ const validations = {
     bioMax: 320,
     otpMin: 4,
     otpMax: 4,
+    groupDescriptionMax: 120
 }
 
 
@@ -34,8 +35,10 @@ const validationsText = {
     OtpMax: `Password: Maximum ${validations.otpMax} characters are allowed`,
 
     phoneMin: `Phone: Minimum ${validations.phoneMin} digits are allowed`,
-    phoneMax: `Phone: Minimum ${validations.phoneMax} digits are allowed`,
+    phoneMax: `Phone: Maximum ${validations.phoneMax} digits are allowed`,
     phoneRequried: `Phone number is requried`,
+
+    groupDescriptionMax: `Phone: Maximum ${validations.groupDescriptionMax} characters are allowed`,
 
     bioMax: `Bio: Maximum ${validations.bioMax} characters are allowed`,
 
@@ -66,10 +69,13 @@ const emailTypes = {
     resendOtp: "resendOtp"
 }
 
+const rolesEnum = [roles.admin, roles.user]
+
 module.exports = {
     validations,
     validationsText,
     roles,
     emailTypes,
-    messageType
+    messageType,
+    rolesEnum,
 }

@@ -12,6 +12,14 @@ const chatsSchema = new mongoose.Schema({
         ref: "Users",
         required: false
     }],
+    groupImage: {
+        type: String,
+        required: false
+    },
+    groupDescription: {
+        type: String,
+        required: false
+    },
     blockedStatuses: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,

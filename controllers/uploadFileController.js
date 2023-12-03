@@ -1,4 +1,4 @@
-const uploadFileSchema = require("../schemas/uploadFileSchema")
+const { uploadFileSchema } = require("../schemas/fileSchema")
 const { APP_URL } = require("../config/index")
 
 class UploadFileController {

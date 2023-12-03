@@ -8,11 +8,6 @@ const messagesSchema = new mongoose.Schema({
         ref: "Users",
         required: [true, validationsText.senderRequried]
     },
-    receiver: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Users",
-        required: [true, validationsText.receiverRequired]
-    },
     messageType: {
         type: Number,
         enum: [messageType.audio, messageType.doc, messageType.image, messageType.text, messageType.video, messageType.startChat],

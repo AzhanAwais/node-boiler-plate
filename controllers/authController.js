@@ -1,19 +1,19 @@
 const BaseController = require("./baseController")
 const Users = require("../models/Users")
 const AuthService = require("../services/authService")
-const userRegisterSchema = require("../schemas/userRegisterSchema")
-const userLoginSchema = require("../schemas/userLoginSchema")
+const { userRegisterSchema } = require("../schemas/authSchema")
+const { userLoginSchema } = require("../schemas/authSchema")
 const CustomError = require("../services/customError")
 const bcrypt = require("bcryptjs")
 const JwtService = require("../services/jwtService")
-const socialLoginSchema = require("../schemas/socialLoginSchema")
-const forgotPasswordSchema = require("../schemas/forgotPasswordSchema")
+const { socialLoginSchema } = require("../schemas/authSchema")
+const { forgotPasswordSchema } = require("../schemas/authSchema")
 const OtpService = require("../services/otpService")
 const EmailService = require("../services/emailService")
 const { emailTypes } = require("../constants/constants")
-const sendOtpSchema = require("../schemas/sendOtpSchema")
-const verifyOtpSchema = require("../schemas/verifyOtpSchema")
-const resetPasswordSchema = require("../schemas/resetPasswordSchema")
+const { sendOtpSchema } = require("../schemas/authSchema")
+const { verifyOtpSchema } = require("../schemas/authSchema")
+const { resetPasswordSchema } = require("../schemas/authSchema")
 
 class AuthController extends BaseController {
     static blackListedTokens = []
@@ -210,10 +210,8 @@ class AuthController extends BaseController {
             await user.save()
 
             res.status(200).send({
-                data: {
-                    message: "Otp has been verified",
-                    token
-                },
+                message: "Otp has been verified",
+                data: { token },
             })
         }
         catch (e) {

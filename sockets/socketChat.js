@@ -11,10 +11,7 @@ class SocketChat extends SocketConnection {
 
         chatIo.on("connection", (socket) => {
 
-            chatIo.on("joinRoom", (data) => {
-                const { sender, receiver } = data
-                const room = ""
-            })
+     
         })
     }
 }

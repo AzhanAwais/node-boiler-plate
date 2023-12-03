@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { validations, validationsText, roles } = require("../constants/constants")
+const { validations, validationsText, roles, rolesEnum } = require("../constants/constants")
 
 const usersSchema = new mongoose.Schema({
     username: {
@@ -61,9 +61,13 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: [true, validationsText.roleRequired],
         default: roles.user,
-        enum: [roles.user, roles.admin]
+        enum: rolesEnum,
     },
     isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    isDeleted: {
         type: Boolean,
         default: false,
     },
@@ -83,7 +87,7 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    onlineStatus: {
+    isOnline: {
         type: Boolean,
         default: false,
     },
