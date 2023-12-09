@@ -1,5 +1,5 @@
 const joi = require("joi")
-const { validations } = require("../constants/constants")
+const { validations, messageTypesEnum } = require("../constants/constants")
 
 const startChatSchema = joi.object({
     sender: joi.string().required(),
@@ -7,15 +7,19 @@ const startChatSchema = joi.object({
 })
 
 const createGroupSchema = joi.object({
-    isGroupChat: joi.boolean().required(),
     groupName: joi.string().min(validations.groupNameMin).max(validations.groupNameMax).required(),
-    groupAdmins: joi.array().required(),
     groupDescription: joi.string().max(validations.groupDescriptionMax),
+    groupImage: joi.string(),
     userIds: joi.array().required(),
-    groupImage: joi.string()
 })
+
+const sendMessageSchema = joi.object({
+    messageType: joi.string().valid(...messageTypesEnum).required(),
+})
+
 
 module.exports = {
     startChatSchema,
-    createGroupSchema
+    createGroupSchema,
+    sendMessageSchema
 }

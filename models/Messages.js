@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { messageType } = require("../constants/constants")
+const { messageType, messageTypesEnum } = require("../constants/constants")
 const { validations, validationsText } = require("../constants/constants")
 
 const messagesSchema = new mongoose.Schema({
@@ -10,25 +10,28 @@ const messagesSchema = new mongoose.Schema({
     },
     messageType: {
         type: Number,
-        enum: [messageType.audio, messageType.doc, messageType.image, messageType.text, messageType.video, messageType.startChat],
+        enum: messageTypesEnum,
         required: [true, validationsText.messageTypeRequired]
     },
     message: {
         type: String,
-        default: ""
+        default: null
     },
     images: [
         {
-            type: String
+            type: String,
+            default: null
         }
     ],
     videos: [
         {
-            type: String
+            type: String,
+            default: null
         }
     ],
     audio: {
-        type: String
+        type: String,
+        default: null
     },
     docs: [{
         name: {

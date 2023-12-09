@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { messageType } = require("../constants/constants")
+const { messageTypesEnum } = require("../constants/constants")
 const { validations, validationsText } = require("../constants/constants")
 
 const chatsSchema = new mongoose.Schema({
@@ -61,14 +61,28 @@ const chatsSchema = new mongoose.Schema({
         }
     }],
     deletedMessages: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Messages",
-        required: false
+        message: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Messages",
+            required: false
+        },
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users",
+            required: false
+        },
     }],
     lastMessageDeleted: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Messages",
-        required: false
+        message: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Messages",
+            required: false
+        },
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users",
+            required: false
+        },
     },
     unReadCount: {
         type: Number,
@@ -89,12 +103,16 @@ const chatsSchema = new mongoose.Schema({
     },
     messageType: {
         type: Number,
-        enum: [messageType.audio, messageType.doc, messageType.image, messageType.text, messageType.video, messageType.startChat],
+        enum: messageTypesEnum,
         required: [true, validationsText.messageTypeRequired]
     },
     lastMessage: {
         type: String,
         default: ""
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
     },
 }, { timestamps: true })
 

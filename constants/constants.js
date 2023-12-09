@@ -59,7 +59,7 @@ const roles = {
     user: 2
 }
 
-const messageType = {
+const messageTypes = {
     text: 1,
     image: 2,
     video: 3,
@@ -75,12 +75,14 @@ const emailTypes = {
 }
 
 const rolesEnum = [roles.admin, roles.user]
+const messageTypesEnum = [messageTypes.audio, messageTypes.doc, messageTypes.image, messageTypes.text, messageTypes.video, messageTypes.startChat]
 
 module.exports = {
     validations,
     validationsText,
     roles,
     emailTypes,
-    messageType,
+    messageTypes,
     rolesEnum,
+    messageTypesEnum
 }

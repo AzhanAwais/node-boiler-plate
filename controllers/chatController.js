@@ -1,4 +1,4 @@
-const { startChatSchema } = require("../schemas/chatSchema")
+const { startChatSchema, createGroupSchema, sendMessageSchema } = require("../schemas/chatSchema")
 const chatService = require("../services/chatService")
 
 class ChatController {
@@ -35,7 +35,35 @@ class ChatController {
     }
 
     async createGroup(req, res, next) {
+        try {
+            const currUser = req.user
+            const { groupName, groupDescription, groupImage, userIds } = req.body
+            const { error } = createGroupSchema.validate(req.body)
+            if (error) {
+                return next(error)
+            }
 
+            const newGroupChat = await chatService.createGroupChat(currUser, groupName, groupDescription, groupImage, userIds)
+            res.status(201).json({
+                message: "Group created successfully",
+                data: newGroupChat
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
+
+    async sendMessage(req, res, next) {
+        try {
+            const { error } = sendMessageSchema.validate(req.body)
+            if (error) {
+                return next(error)
+            }
+        }
+        catch (e) {
+            next(e)
+        }
     }
 }
 
