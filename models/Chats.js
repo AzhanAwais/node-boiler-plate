@@ -72,10 +72,17 @@ const chatsSchema = new mongoose.Schema({
             required: false
         },
     }],
-    unReadCount: {
-        type: Number,
-        default: 0
-    },
+    unReadCount: [{
+        count: {
+            type: Number,
+            default: 0
+        },
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users",
+            required: false
+        },
+    }],
     userIds: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",

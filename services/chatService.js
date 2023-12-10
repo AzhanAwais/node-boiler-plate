@@ -39,6 +39,7 @@ class ChatService {
             readStatuses: userIds.map((item) => ({ user: item, isRead: false })),
             deletedStatuses: userIds.map((item) => ({ user: item, isDeleted: false })),
             deletedMessages: userIds.map((item) => ({ message: null, user: item })),
+            unReadCount: userIds.map((item) => ({ count: 0, user: item })),
             userIds: userIds,
             sender: sender,
             receiver: receiver,
@@ -46,7 +47,7 @@ class ChatService {
             lastMessage: "No message yet",
         })
         await chat.save()
-        await chat.populate('blockedStatuses readStatuses deletedStatuses deletedMessages lastMessageDeleted sender receiver', '-otp -password');
+        await chat.populate('blockedStatuses readStatuses deletedStatuses deletedMessages sender receiver', '-otp -password');
         return chat
     }
 
@@ -56,6 +57,7 @@ class ChatService {
             readStatuses: userIds.map((item) => ({ user: item, isRead: false })),
             deletedStatuses: userIds.map((item) => ({ user: item, isDeleted: false })),
             deletedMessages: userIds.map((item) => ({ message: null, user: item })),
+            unReadCount: userIds.map((item) => ({ count: 0, user: item })),
             isGroupChat: true,
             groupAdmins: [currUser._id],
             groupName: groupName,
@@ -66,7 +68,7 @@ class ChatService {
             lastMessage: "Group created",
         })
         await chat.save()
-        await chat.populate('blockedStatuses readStatuses deletedStatuses deletedMessages lastMessageDeleted sender receiver', '-otp -password');
+        await chat.populate('blockedStatuses readStatuses deletedStatuses deletedMessages sender receiver', '-otp -password');
         return chat
     }
 
@@ -87,12 +89,21 @@ class ChatService {
 
         await message.save()
         await message.populate("sender", '-otp -password')
-        await Chats.findByIdAndUpdate({ _id: chatId }, {
-            sender: currUser._id,
-            receiver: receiver,
-            messageType: messageType,
-            lastMessage: this.getLastMessageByMessageType(messageType, messageData),
-        }, { new: true })
+        await Chats.findByIdAndUpdate(
+            { _id: chatId },
+            {
+                sender: currUser._id,
+                receiver: receiver,
+                messageType: messageType,
+                lastMessage: this.getLastMessageByMessageType(messageType, messageData),
+                $inc: { 'unReadCount.$[elem].count': 1 },
+                $set: { 'readStatuses.$[elem].isRead': false },
+            },
+            {
+                new: true,
+                arrayFilters: [{ 'elem.user': { $ne: currUser._id } }],
+            }
+        )
 
         return message
     }
@@ -110,6 +121,21 @@ class ChatService {
         return message
     }
 
+    async markAllMsgsAsRead(chatId, currUser) {
+        const chat = await Chats.findByIdAndUpdate(
+            { _id: chatId },
+            {
+                $set: {
+                    'unReadCount.$[elem].count': 0,
+                    'readStatuses.$[elem].isRead': true,
+                }
+            },
+            {
+                new: true,
+                arrayFilters: [{ 'elem.user': { $ne: currUser._id } }]
+            }
+        )
+    }
 
 }
 

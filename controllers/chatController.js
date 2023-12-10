@@ -5,6 +5,7 @@ class ChatController {
 
     async startChat(req, res, next) {
         try {
+            const currUser = req.user
             const { sender, receiver } = req.body
             const userIds = [sender, receiver]
 
@@ -21,6 +22,8 @@ class ChatController {
                     data: newChat
                 })
             }
+            const chatId = chat._id
+            await chatService.markAllMsgsAsRead(chatId, currUser)
 
             res.status(200).json({
                 message: "Chat fetch successfully",
@@ -88,7 +91,7 @@ class ChatController {
         }
     }
 
-    
+
 }
 
 module.exports = ChatController
