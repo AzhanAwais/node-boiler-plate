@@ -1,5 +1,5 @@
 const joi = require("joi")
-const { validations } = require("../constants/constants")
+const { validations, rolesEnum } = require("../constants/constants")
 
 const userRegisterSchema = joi.object({
     username: joi.string().min(validations.usernameMin).max(validations.usernameMax),
@@ -7,7 +7,12 @@ const userRegisterSchema = joi.object({
     email: joi.string().max(validations.emailMax).required(),
     password: joi.string().max(validations.passwordMax).required(),
     phone: joi.string().min(validations.phoneMin).max(validations.phoneMax),
+    dob: joi.string(),
     bio: joi.string().max(validations.bioMax),
+    profileImage: joi.string(),
+    role: joi.number().valid(...rolesEnum),
+    deviceType: joi.string(),
+    deviceToken: joi.string(),
 })
 
 const userLoginSchema = joi.object({

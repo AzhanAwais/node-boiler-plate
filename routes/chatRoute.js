@@ -10,6 +10,7 @@ class ChatRoute {
 
         this.router.post("/start-chat", authMiddleware, this.chatController.startChat.bind(this))
         this.router.post("/send-message", authMiddleware, this.chatController.sendMessage.bind(this))
+        this.router.delete("/delete-message/:id", authMiddleware, this.chatController.deleteMessage.bind(this))
 
 
 

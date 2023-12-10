@@ -3,7 +3,17 @@ const { messageType, messageTypesEnum } = require("../constants/constants")
 const { validations, validationsText } = require("../constants/constants")
 
 const messagesSchema = new mongoose.Schema({
+    chatId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Chats",
+        required: [true, validationsText.chatIdRequired]
+    },
     sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",
+        required: [true, validationsText.senderRequried]
+    },
+    receiver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
         required: [true, validationsText.senderRequried]
@@ -40,7 +50,11 @@ const messagesSchema = new mongoose.Schema({
         url: {
             type: String
         },
-    }]
+    }],
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
 
 }, { timestamps: true })
 

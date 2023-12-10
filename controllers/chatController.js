@@ -2,7 +2,6 @@ const { startChatSchema, createGroupSchema, sendMessageSchema } = require("../sc
 const chatService = require("../services/chatService")
 
 class ChatController {
-    // return next(new CustomError(400, "Invalid login credentials"))
 
     async startChat(req, res, next) {
         try {
@@ -43,7 +42,7 @@ class ChatController {
                 return next(error)
             }
 
-            const newGroupChat = await chatService.createGroupChat(currUser, groupName, groupDescription, groupImage, userIds)
+            const newGroupChat = await chatService.createGroup(currUser, groupName, groupDescription, groupImage, userIds)
             res.status(201).json({
                 message: "Group created successfully",
                 data: newGroupChat
@@ -56,10 +55,33 @@ class ChatController {
 
     async sendMessage(req, res, next) {
         try {
+            const currUser = req.user
+            const { chatId } = req.body
             const { error } = sendMessageSchema.validate(req.body)
             if (error) {
                 return next(error)
             }
+            const isChatExists = await chatService.isChatExists(chatId)
+            const newMessage = await chatService.sendMessage(currUser, req.body)
+            res.status(201).json({
+                message: "Message send successfully",
+                data: newMessage
+            })
+        }
+        catch (e) {
+            next(e)
+        }
+    }
+
+    async deleteMessage(req, res, next) {
+        try {
+            const { id } = req.params
+            const deletedMessage = await chatService.deleteMessage(id)
+
+            res.status(200).json({
+                message: "Message deleted successfully",
+                data: deletedMessage
+            })
         }
         catch (e) {
             next(e)

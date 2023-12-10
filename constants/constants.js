@@ -50,8 +50,8 @@ const validationsText = {
     messageTypeRequired: `Message type is required`,
     senderRequried: `Sender id is required`,
     receiverRequired: `Receiver id type is required`,
-    userIdsRequired: "User ids is requried"
-
+    userIdsRequired: "User ids is requried",
+    chatIdRequired: "Chat id is required",
 }
 
 const roles = {
@@ -65,7 +65,6 @@ const messageTypes = {
     video: 3,
     audio: 4,
     doc: 5,
-    startChat: 6
 }
 
 const emailTypes = {
@@ -75,7 +74,7 @@ const emailTypes = {
 }
 
 const rolesEnum = [roles.admin, roles.user]
-const messageTypesEnum = [messageTypes.audio, messageTypes.doc, messageTypes.image, messageTypes.text, messageTypes.video, messageTypes.startChat]
+const messageTypesEnum = [messageTypes.audio, messageTypes.doc, messageTypes.image, messageTypes.text, messageTypes.video]
 
 module.exports = {
     validations,

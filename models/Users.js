@@ -58,7 +58,7 @@ const usersSchema = new mongoose.Schema({
         required: false
     },
     role: {
-        type: String,
+        type: Number,
         required: [true, validationsText.roleRequired],
         default: roles.user,
         enum: rolesEnum,
@@ -78,6 +78,14 @@ const usersSchema = new mongoose.Schema({
     isSocialLogin: {
         type: Boolean,
         default: false,
+    },
+    deviceType: {
+        type: String,
+        required: false,
+    },
+    deviceToken: {
+        type: String,
+        required: false
     },
     clientToken: {
         type: String,

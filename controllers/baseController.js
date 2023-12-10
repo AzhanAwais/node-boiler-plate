@@ -84,7 +84,7 @@ class BaseController {
     async deleteOne(req, res, next) {
         try {
             const { id } = req.params
-            const data = await this.model.findByIdAndDelete({ _id: id })
+            const data = await this.model.findByIdAndUpdate({ _id: id }, { isDeleted: true }, { new: true })
             if (!data) {
                 return next(new CustomError(404, "Record not found"))
             }
