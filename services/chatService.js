@@ -22,9 +22,6 @@ class ChatService {
         else if (messageType == messageTypes.text) {
             return messageData.message
         }
-        else if (messageType == messageTypes.deleteMessage) {
-            return "This message is deleted"
-        }
     }
 
     async isChatAlreadyExists(userIds) {
