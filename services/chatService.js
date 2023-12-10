@@ -39,7 +39,6 @@ class ChatService {
             readStatuses: userIds.map((item) => ({ user: item, isRead: false })),
             deletedStatuses: userIds.map((item) => ({ user: item, isDeleted: false })),
             deletedMessages: userIds.map((item) => ({ message: null, user: item })),
-            lastMessageDeleted: userIds.map((item) => ({ message: null, user: item })),
             userIds: userIds,
             sender: sender,
             receiver: receiver,
@@ -57,7 +56,6 @@ class ChatService {
             readStatuses: userIds.map((item) => ({ user: item, isRead: false })),
             deletedStatuses: userIds.map((item) => ({ user: item, isDeleted: false })),
             deletedMessages: userIds.map((item) => ({ message: null, user: item })),
-            lastMessageDeleted: userIds.map((item) => ({ message: null, user: item })),
             isGroupChat: true,
             groupAdmins: [currUser._id],
             groupName: groupName,
@@ -111,6 +109,8 @@ class ChatService {
 
         return message
     }
+
+
 }
 
 module.exports = new ChatService()

@@ -87,6 +87,8 @@ class ChatController {
             next(e)
         }
     }
+
+    
 }
 
 module.exports = ChatController

@@ -72,18 +72,6 @@ const chatsSchema = new mongoose.Schema({
             required: false
         },
     }],
-    lastMessageDeleted: {
-        message: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Messages",
-            required: false
-        },
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
-            required: false
-        },
-    },
     unReadCount: {
         type: Number,
         default: 0
