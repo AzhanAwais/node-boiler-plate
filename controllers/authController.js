@@ -14,6 +14,7 @@ const { emailTypes } = require("../constants/constants")
 const { sendOtpSchema } = require("../schemas/authSchema")
 const { verifyOtpSchema } = require("../schemas/authSchema")
 const { resetPasswordSchema } = require("../schemas/authSchema")
+const moment = require("moment")
 
 class AuthController extends BaseController {
     static blackListedTokens = []
@@ -51,10 +52,17 @@ class AuthController extends BaseController {
             if (!isPasswordValid) {
                 return next(new CustomError(400, "Invalid login credentials"))
             }
-            if (user.otp.code) {
+            if (user.otp.code && user.otp.type == emailTypes.register) {
                 return next(new CustomError(400, "Please verify your otp to login"))
             }
+            if (user.isDeleted) {
+                return next(new CustomError(200, "Account is deleted"))
+            }
+
             const token = JwtService.generateToken(user)
+            user.isOnline = true
+            await user.save()
+
             res.status(200).send({
                 message: "User login successfully",
                 data: {
@@ -118,6 +126,7 @@ class AuthController extends BaseController {
             const user = await AuthService.findUserByEmail(email)
             const otp = OtpService.generateOtp()
             user.otp = {
+                type: emailTypes.register,
                 code: otp,
                 expiresIn: OtpService.getExpiresIn()
             }
@@ -161,7 +170,7 @@ class AuthController extends BaseController {
 
     async resendOtp(req, res, next) {
         try {
-            const { email } = req.body
+            const { email, type } = req.body
             const { error } = sendOtpSchema.validate(req.body)
             if (error) {
                 return next(error)
@@ -170,6 +179,7 @@ class AuthController extends BaseController {
             const user = await AuthService.findUserByEmail(email)
             const otp = OtpService.generateOtp()
             user.otp = {
+                type: type,
                 code: otp,
                 expiresIn: OtpService.getExpiresIn()
             }
@@ -196,13 +206,16 @@ class AuthController extends BaseController {
 
             const user = await AuthService.findUserByEmail(email)
             const currentTimestamp = new Date().getTime()
-            if (currentTimestamp > user.otp.expiresIn) {
+            const otpExpiresTimestamp = moment(user.otp.expiresIn).valueOf()
+
+            if (currentTimestamp > otpExpiresTimestamp) {
                 return next(new CustomError(419, "Otp code is expired"))
             }
             if (otp != user.otp.code) {
                 return next(new CustomError(400, "Invalid otp code"))
             }
             user.otp = {
+                type: null,
                 code: null,
                 expiresIn: null
             }
@@ -223,6 +236,9 @@ class AuthController extends BaseController {
     async logout(req, res, next) {
         try {
             const token = JwtService.getTokenFormHeaders(req.headers)
+            const user = await AuthService.findUserByToken(token)
+            user.isOnline = false
+            await user.save()
             AuthController.blackListedTokens.push(token)
 
             res.status(200).send({

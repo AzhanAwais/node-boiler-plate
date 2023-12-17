@@ -33,9 +33,10 @@ const validationsText = {
     passwordRequired: "Password is required",
     passwordMax: `Password: Maximum ${validations.passwordMax} characters are allowed`,
 
-    OtpRequired: "Otp is required",
-    OtpMax: `Otp: Minimum ${validations.otpMin} characters are allowed`,
-    OtpMax: `Otp: Maximum ${validations.otpMax} characters are allowed`,
+    otpRequired: "Otp is required",
+    otpTypeRequired: "Otp type is required",
+    otpMin: `Otp: Minimum ${validations.otpMin} characters are allowed`,
+    otpMax: `Otp: Maximum ${validations.otpMax} characters are allowed`,
 
     phoneMin: `Phone: Minimum ${validations.phoneMin} digits are allowed`,
     phoneMax: `Phone: Maximum ${validations.phoneMax} digits are allowed`,
@@ -75,6 +76,7 @@ const emailTypes = {
 
 const rolesEnum = [roles.admin, roles.user]
 const messageTypesEnum = [messageTypes.audio, messageTypes.doc, messageTypes.image, messageTypes.text, messageTypes.video]
+const emailTypesEnum = [emailTypes.forgotPassword, emailTypes.register]
 
 module.exports = {
     validations,
@@ -83,5 +85,6 @@ module.exports = {
     emailTypes,
     messageTypes,
     rolesEnum,
-    messageTypesEnum
+    messageTypesEnum,
+    emailTypesEnum
 }

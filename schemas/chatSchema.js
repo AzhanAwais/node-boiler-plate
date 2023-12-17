@@ -30,8 +30,13 @@ const sendMessageSchema = joi.object({
 
 })
 
+const blockAndUnblockUserSchema = joi.object({
+    userId: joi.string().required()
+})
+
 module.exports = {
     startChatSchema,
     createGroupSchema,
-    sendMessageSchema
+    sendMessageSchema,
+    blockAndUnblockUserSchema
 }

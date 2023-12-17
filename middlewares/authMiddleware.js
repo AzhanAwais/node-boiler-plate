@@ -1,4 +1,3 @@
-const AuthService = require("../services/authService")
 const JwtService = require("../services/jwtService")
 const AuthController = require("../controllers/authController")
 const CustomError = require("../services/customError")
@@ -20,11 +19,11 @@ const authMiddleware = async (req, res, next) => {
 
         const id = await JwtService.verifyToken(token)
         const user = await User.findById({ _id: id })
-        req.user = user
-
         if (!user) {
             return next(new CustomError(401, "Unauthorized invalid token provided"))
         }
+
+        req.user = user
         next()
     }
     catch (e) {

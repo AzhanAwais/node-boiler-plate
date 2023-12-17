@@ -17,6 +17,7 @@ class AuthService {
             user.password = await bcrypt.hash(user.password, 10)
             const otp = OtpService.generateOtp()
             user.otp = {
+                type: emailTypes.register,
                 code: otp,
                 expiresIn: OtpService.getExpiresIn()
             }

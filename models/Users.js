@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const { validations, validationsText, roles, rolesEnum } = require("../constants/constants")
+const { validations, validationsText, roles, rolesEnum, emailTypesEnum } = require("../constants/constants")
 
 const usersSchema = new mongoose.Schema({
     username: {
@@ -27,6 +27,10 @@ const usersSchema = new mongoose.Schema({
         required: false,
     },
     otp: {
+        type: {
+            type: String,
+            enum: emailTypesEnum
+        },
         code: {
             type: String,
             default: null,

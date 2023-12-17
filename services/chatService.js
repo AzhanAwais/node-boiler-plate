@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
+const { messageTypes } = require("../constants/constants")
 const Chats = require("../models/Chats")
 const Messages = require("../models/Messages")
-const { messageTypes } = require("../constants/constants")
 const CustomError = require("./customError")
 
 class ChatService {
@@ -37,7 +37,6 @@ class ChatService {
         const chat = new Chats({
             blockedStatuses: userIds.map((item) => ({ user: item, isBlocked: false })),
             readStatuses: userIds.map((item) => ({ user: item, isRead: false })),
-            deletedStatuses: userIds.map((item) => ({ user: item, isDeleted: false })),
             deletedMessages: userIds.map((item) => ({ message: null, user: item })),
             unReadCount: userIds.map((item) => ({ count: 0, user: item })),
             userIds: userIds,
@@ -47,7 +46,7 @@ class ChatService {
             lastMessage: "No message yet",
         })
         await chat.save()
-        await chat.populate('blockedStatuses readStatuses deletedStatuses deletedMessages sender receiver', '-otp -password');
+        await chat.populate('blockedStatuses readStatuses deletedMessages sender receiver', '-otp -password');
         return chat
     }
 
@@ -55,7 +54,6 @@ class ChatService {
         const chat = new Chats({
             blockedStatuses: userIds.map((item) => ({ user: item, isBlocked: false })),
             readStatuses: userIds.map((item) => ({ user: item, isRead: false })),
-            deletedStatuses: userIds.map((item) => ({ user: item, isDeleted: false })),
             deletedMessages: userIds.map((item) => ({ message: null, user: item })),
             unReadCount: userIds.map((item) => ({ count: 0, user: item })),
             isGroupChat: true,
@@ -68,7 +66,7 @@ class ChatService {
             lastMessage: "Group created",
         })
         await chat.save()
-        await chat.populate('blockedStatuses readStatuses deletedStatuses deletedMessages sender receiver', '-otp -password');
+        await chat.populate('blockedStatuses readStatuses deletedMessages sender receiver', '-otp -password');
         return chat
     }
 
@@ -88,7 +86,7 @@ class ChatService {
         })
 
         await message.save()
-        await message.populate("sender", '-otp -password')
+        await message.populate("sender receiver", '-otp -password')
         await Chats.findByIdAndUpdate(
             { _id: chatId },
             {
@@ -122,7 +120,7 @@ class ChatService {
     }
 
     async markAllMsgsAsRead(chatId, currUser) {
-        const chat = await Chats.findByIdAndUpdate(
+        await Chats.findByIdAndUpdate(
             { _id: chatId },
             {
                 $set: {
@@ -137,6 +135,84 @@ class ChatService {
         )
     }
 
+    async deleteChat(chatId, currUser) {
+        const [lastMessage] = await Messages.find({ chatId: chatId }).sort({ updatedAt: -1 })
+        const chat = await Chats.findByIdAndUpdate(
+            {
+                _id: chatId
+            },
+            {
+                $set: {
+                    'deletedMessages.$[elem].message': lastMessage._id,
+                }
+            },
+            {
+                new: true,
+                arrayFilters: [{ 'elem.user': { $eq: currUser._id } }]
+            }
+        )
+
+        if (!chat) {
+            throw new CustomError(400, `Invalid chatId. No chat found`)
+        }
+
+        return chat
+    }
+
+    async blockUser(userIds, userId) {
+
+        const chat = await Chats.findOneAndUpdate(
+            {
+                isGroupChat: false,
+                userIds: { $in: userIds.map(id => new mongoose.Types.ObjectId(id)) },
+            },
+            {
+                $set: {
+                    'blockedStatuses.$[elem].isBlocked': true,
+                }
+            },
+            {
+                new: true,
+                arrayFilters: [{ 'elem.user': { $eq: userId } }]
+            }
+        ).populate('sender receiver', '-otp -password')
+
+        if (!chat) {
+            throw new CustomError(400, `No chat found between these users`)
+        }
+
+        return chat
+    }
+
+    async unblockUser(userIds, userId) {
+
+        const chat = await Chats.findOneAndUpdate(
+            {
+                isGroupChat: false,
+                userIds: { $in: userIds.map(id => new mongoose.Types.ObjectId(id)) },
+            },
+            {
+                $set: {
+                    'blockedStatuses.$[elem].isBlocked': false,
+                }
+            },
+            {
+                new: true,
+                arrayFilters: [{ 'elem.user': { $eq: userId } }]
+            }
+        ).populate('sender receiver', '-otp -password')
+
+        if (!chat) {
+            throw new CustomError(400, `No chat found between these users`)
+        }
+
+        return chat
+    }
+
+    async getMessages(query) {
+        const messages = await Messages.find(query).sort({ updatedAt: -1 }).populate("sender receiver chatId", '-otp -password')
+        return messages
+    }
 }
 
 module.exports = new ChatService()

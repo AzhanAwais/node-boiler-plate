@@ -1,4 +1,4 @@
-const { startChatSchema, createGroupSchema, sendMessageSchema } = require("../schemas/chatSchema")
+const { startChatSchema, createGroupSchema, sendMessageSchema, blockAndUnblockUserSchema } = require("../schemas/chatSchema")
 const chatService = require("../services/chatService")
 
 class ChatController {
@@ -91,6 +91,85 @@ class ChatController {
         }
     }
 
+    async deleteChat(req, res, next) {
+        try {
+            const currUser = req.user
+            const { id } = req.params
+            const deletedChat = await chatService.deleteChat(id, currUser)
+
+            res.status(200).json({
+                message: "Chat deleted successfully",
+                data: deletedChat
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
+
+    async blockUser(req, res, next) {
+        const currUser = req.user
+        const { userId } = req.body
+        const userIds = [currUser, userId]
+
+        try {
+            const { error } = blockAndUnblockUserSchema.validate(req.body)
+            if (error) {
+                return next(error)
+            }
+            const chat = await chatService.blockUser(userIds, userId)
+
+            res.status(200).json({
+                message: "User blocked successfully",
+                data: chat
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
+
+    async unblockUser(req, res, next) {
+        const currUser = req.user
+        const { userId } = req.body
+        const userIds = [currUser, userId]
+
+        try {
+            const { error } = blockAndUnblockUserSchema.validate(req.body)
+            if (error) {
+                return next(error)
+            }
+            const chat = await chatService.unblockUser(userIds, userId)
+
+            res.status(200).json({
+                message: "User unblocked successfully",
+                data: chat
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
+
+    async getMessages(req, res, next) {
+        try {
+            let query = {}
+            if (req.query) {
+                query = {
+                    chatId: req.query.chatId
+                }
+            }
+
+            const messages = await chatService.getMessages(query)
+            res.status(200).json({
+                message: "Messagees fetch successfully",
+                data: messages
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
 
 }
 

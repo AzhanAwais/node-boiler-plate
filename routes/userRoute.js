@@ -6,7 +6,7 @@ class UserRoute extends BaseRoute {
     static populateFields = []
 
     constructor() {
-        super(User, userRegisterSchema, UserRoute.populateFields, "user")
+        super(User, userRegisterSchema, UserRoute.populateFields)
     }
 }
 

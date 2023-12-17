@@ -1,6 +1,6 @@
+const xlsx = require("xlsx")
 const CustomError = require("../services/customError")
 const PaginationService = require("../services/paginationService")
-
 
 class BaseController {
     constructor(model, validationSchema, populateFields) {
@@ -24,6 +24,34 @@ class BaseController {
         }
         catch (e) {
             next(e)
+        }
+    }
+
+    async bulkUpload(req, res, next) {
+        try {
+            const { filter } = req.body
+            const file = xlsx.readFile(req.file)
+            const sheetName = file.SheetNames[0]
+            const sheet = file.Sheets[sheetName]
+            const sheetData = xlsx.utils.sheet_to_json(sheet)
+
+            const bulkOperations = sheetData?.map(item => ({
+                updateOne: {
+                    "filter": { [filter]: item.filter },
+                    "update": { $set: item },
+                    "upsert": true,
+                },
+            }))
+
+            await this.model.bulkWrite(bulkOperations)
+            res.status(201).send({
+                message: "Record created successfully",
+                data,
+            })
+
+        }
+        catch (e) {
+            return next(e)
         }
     }
 

@@ -49,17 +49,6 @@ const chatsSchema = new mongoose.Schema({
             default: false
         }
     }],
-    deletedStatuses: [{
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
-            required: false
-        },
-        isDeleted: {
-            type: Boolean,
-            default: false
-        }
-    }],
     deletedMessages: [{
         message: {
             type: mongoose.Schema.Types.ObjectId,
