@@ -11,7 +11,7 @@ const { forgotPasswordSchema } = require("../schemas/authSchema")
 const OtpService = require("../services/otpService")
 const EmailService = require("../services/emailService")
 const { emailTypes } = require("../constants/constants")
-const { sendOtpSchema } = require("../schemas/authSchema")
+const { resendOtpSchema } = require("../schemas/authSchema")
 const { verifyOtpSchema } = require("../schemas/authSchema")
 const { resetPasswordSchema } = require("../schemas/authSchema")
 const moment = require("moment")
@@ -171,7 +171,7 @@ class AuthController extends BaseController {
     async resendOtp(req, res, next) {
         try {
             const { email, type } = req.body
-            const { error } = sendOtpSchema.validate(req.body)
+            const { error } = resendOtpSchema.validate(req.body)
             if (error) {
                 return next(error)
             }
@@ -198,7 +198,7 @@ class AuthController extends BaseController {
 
     async verifyOtp(req, res, next) {
         try {
-            const { email, otp } = req.body
+            const { email, otp, type } = req.body
             const { error } = verifyOtpSchema.validate(req.body)
             if (error) {
                 return next(error)
@@ -213,6 +213,9 @@ class AuthController extends BaseController {
             }
             if (otp != user.otp.code) {
                 return next(new CustomError(400, "Invalid otp code"))
+            }
+            if(type == emailTypes.register){
+                user.isVerified = true
             }
             user.otp = {
                 type: null,

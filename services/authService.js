@@ -14,6 +14,9 @@ class AuthService {
         }
 
         if (!isSocialLogin) {
+            if (user.password != user.confirmPassword) {
+                throw new CustomError(400, `Password and confirm password must be same`)
+            }
             user.password = await bcrypt.hash(user.password, 10)
             const otp = OtpService.generateOtp()
             user.otp = {
