@@ -1,11 +1,12 @@
 const joi = require("joi")
-const { validations, rolesEnum } = require("../constants/constants")
+const { validations, rolesEnum, emailTypesEnum } = require("../constants/constants")
 
 const userRegisterSchema = joi.object({
     username: joi.string().min(validations.usernameMin).max(validations.usernameMax),
     fullname: joi.string().min(validations.fullNameMin).max(validations.fullNameMax).required(),
     email: joi.string().max(validations.emailMax).required(),
     password: joi.string().max(validations.passwordMax).required(),
+    confirmPassword: joi.string().max(validations.passwordMax).required(),
     phone: joi.string().min(validations.phoneMin).max(validations.phoneMax),
     dob: joi.string(),
     bio: joi.string().max(validations.bioMax),
@@ -26,13 +27,15 @@ const socialLoginSchema = joi.object({
     platformType: joi.string().required(),
 })
 
-const sendOtpSchema = joi.object({
+const resendOtpSchema = joi.object({
     email: joi.string().max(validations.emailMax).required(),
+    type: joi.string().valid(...emailTypesEnum).required()
 })
 
 const verifyOtpSchema = joi.object({
     email: joi.string().max(validations.emailMax).required(),
     otp: joi.string().min(validations.otpMin).max(validations.otpMax).required(),
+    type: joi.string().valid(...emailTypesEnum).required()
 })
 
 const forgotPasswordSchema = joi.object({
@@ -48,7 +51,7 @@ module.exports = {
     userRegisterSchema,
     userLoginSchema,
     socialLoginSchema,
-    sendOtpSchema,
+    resendOtpSchema,
     verifyOtpSchema,
     forgotPasswordSchema,
     resetPasswordSchema,

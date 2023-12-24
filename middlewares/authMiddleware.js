@@ -10,7 +10,7 @@ const authMiddleware = async (req, res, next) => {
             return next(new CustomError(401, `Unauthorized or No token provided`))
         }
 
-        const token = authorizationHeader.split(' ')[2]
+        const token = authorizationHeader.split(' ')[1]
         const isTokenExpired = AuthController.blackListedTokens.includes(token)
 
         if (isTokenExpired) {

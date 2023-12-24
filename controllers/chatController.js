@@ -153,17 +153,41 @@ class ChatController {
 
     async getMessages(req, res, next) {
         try {
-            let query = {}
-            if (req.query) {
-                query = {
-                    chatId: req.query.chatId
-                }
-            }
-
-            const messages = await chatService.getMessages(query)
+            const { chatId } = req.params
+            const messages = await chatService.getMessages(chatId)
             res.status(200).json({
-                message: "Messagees fetch successfully",
+                message: "Messages fetch successfully",
                 data: messages
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
+
+    async getChatUsers(req, res, next) {
+        try {
+            const currUser = req.user
+            const chatUsers = await chatService.getChatUsers(currUser)
+            res.status(200).json({
+                message: "Chat Users fetch successfully",
+                data: chatUsers
+            })
+        }
+        catch (e) {
+            return next(e)
+        }
+    }
+
+    async searchUsers(req, res, next) {
+        try {
+            let query = req.query
+            const currUser = req.user
+
+            const users = await chatService.searchUsers(currUser, query)
+            res.status(200).json({
+                message: "Users fetch successfully",
+                data: users
             })
         }
         catch (e) {

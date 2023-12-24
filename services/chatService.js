@@ -3,6 +3,7 @@ const { messageTypes } = require("../constants/constants")
 const Chats = require("../models/Chats")
 const Messages = require("../models/Messages")
 const CustomError = require("./customError")
+const Users = require("../models/Users")
 
 class ChatService {
 
@@ -209,9 +210,36 @@ class ChatService {
         return chat
     }
 
-    async getMessages(query) {
-        const messages = await Messages.find(query).sort({ updatedAt: -1 }).populate("sender receiver chatId", '-otp -password')
+    async getMessages(chatId) {
+        const messages = await Messages.find({ chatId: chatId }).sort({ updatedAt: -1 }).populate("sender receiver chatId", '-otp -password')
         return messages
+    }
+
+    async getChatUsers(currUser) {
+        const chatUsers = await Chats.find({
+            userIds: { $in: [currUser._id] }
+        }).populate("sender receiver", '-otp -password').sort({ createAt: -1 })
+
+        return chatUsers
+    }
+
+    async searchUsers(currUser, query) {
+        let findQuery = { _id: { $nin: [currUser?._id] } }
+
+        if (query.search) {
+            const queryString = new RegExp(query.search, 'i');
+            findQuery = {
+                ...findQuery,
+                $or: [
+                    { fullname: queryString },
+                    { email: queryString },
+                    { phone: queryString }
+                ],
+            }
+        }
+
+        const users = await Users.find(findQuery, { password: 0, otp: 0 })
+        return users
     }
 }
 
