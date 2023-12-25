@@ -3,7 +3,7 @@ class PaginationService {
         this.model = model
     }
 
-    async addPagination(query = {}, populateFields = []) {
+    async addPagination(query = {}, populateFields = [], projection = {}) {
         let data = []
         let pagination = null
         const findQuery = this.getFindQuery(query)
@@ -12,7 +12,7 @@ class PaginationService {
         const sort = sortOrder || 1
         const sortBy = query.sortBy || "createdAt"
 
-        let queryBuilder = this.model.find(findQuery).sort({ [sortBy]: sort })
+        let queryBuilder = this.model.find(findQuery, projection).sort({ [sortBy]: sort })
 
         if (query.paginate) {
             const page = parseInt(query.page) || 1
@@ -34,7 +34,7 @@ class PaginationService {
 
         return {
             data,
-            pagination
+            ...(pagination && { pagination: pagination })
         }
     }
 

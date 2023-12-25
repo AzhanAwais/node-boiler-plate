@@ -4,6 +4,7 @@ const Chats = require("../models/Chats")
 const Messages = require("../models/Messages")
 const CustomError = require("./customError")
 const Users = require("../models/Users")
+const PaginationService = require("./paginationService")
 
 class ChatService {
 
@@ -224,7 +225,14 @@ class ChatService {
     }
 
     async searchUsers(currUser, query) {
-        let findQuery = { _id: { $nin: [currUser?._id] } }
+        let populateFields = []
+        let projection = { password: 0, otp: 0 }
+        let findQuery = {
+            ...query,
+            _id: { $nin: [currUser?._id] },
+            isDeleted: false,
+        }
+        delete findQuery.search
 
         if (query.search) {
             const queryString = new RegExp(query.search, 'i');
@@ -237,8 +245,8 @@ class ChatService {
                 ],
             }
         }
-
-        const users = await Users.find(findQuery, { password: 0, otp: 0 })
+        const paginationService = new PaginationService(Users)
+        const users = await paginationService.addPagination(findQuery, populateFields, projection)
         return users
     }
 }
