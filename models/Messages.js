@@ -16,7 +16,6 @@ const messagesSchema = new mongoose.Schema({
     receiver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
-        required: [true, validationsText.senderRequried]
     },
     messageType: {
         type: Number,

@@ -29,7 +29,7 @@ class ChatService {
     async isChatAlreadyExists(userIds) {
         const chat = await Chats.findOne({
             isGroupChat: false,
-            userIds: { $in: userIds.map(id => new mongoose.Types.ObjectId(id)) }
+            userIds: { $all: userIds.map(id => new mongoose.Types.ObjectId(id)) }
         }).populate("sender receiver", "-otp -password")
 
         return chat

@@ -64,7 +64,7 @@ class ChatController {
             if (error) {
                 return next(error)
             }
-            const isChatExists = await chatService.isChatExists(chatId)
+            await chatService.isChatExists(chatId)
             const newMessage = await chatService.sendMessage(currUser, req.body)
             res.status(201).json({
                 message: "Message send successfully",
