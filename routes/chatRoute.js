@@ -12,7 +12,9 @@ class ChatRoute {
         this.router.post("/send-message", authMiddleware, this.chatController.sendMessage.bind(this))
         this.router.delete("/delete-message/:id", authMiddleware, this.chatController.deleteMessage.bind(this))
         this.router.delete("/delete-chat/:id", authMiddleware, this.chatController.deleteChat.bind(this))
-        this.router.get("/get-messages", authMiddleware, this.chatController.getMessages.bind(this))
+        this.router.get("/get-messages/:chatId", authMiddleware, this.chatController.getMessages.bind(this))
+        this.router.get("/get-chat-users", authMiddleware, this.chatController.getChatUsers.bind(this))
+        this.router.get("/search-users", authMiddleware, this.chatController.searchUsers.bind(this))
 
         this.router.post("/block-user", authMiddleware, this.chatController.blockUser.bind(this))
         this.router.post("/unblock-user", authMiddleware, this.chatController.unblockUser.bind(this))

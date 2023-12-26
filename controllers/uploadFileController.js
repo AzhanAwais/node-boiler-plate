@@ -1,5 +1,4 @@
 const { uploadFileSchema } = require("../schemas/fileSchema")
-const { APP_URL } = require("../config/index")
 
 class UploadFileController {
     async uploadFile(req, res, next) {
@@ -8,7 +7,7 @@ class UploadFileController {
             if (error) {
                 next(error)
             }
-            const fileUrl = `${APP_URL}/uploads/${req.file.filename}`
+            const fileUrl = `/uploads/${req.file.filename}`
 
             res.status(201).send({
                 message: "File uploaded successfully",
