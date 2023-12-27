@@ -135,8 +135,6 @@ class ChatService {
                 arrayFilters: [{ 'elem.user': { $eq: currUser._id } }]
             }
         )
-
-        console.log(chat,'=-------------')
     }
 
     async deleteChat(chatId, currUser) {
@@ -168,7 +166,7 @@ class ChatService {
         const chat = await Chats.findOneAndUpdate(
             {
                 isGroupChat: false,
-                userIds: { $in: userIds.map(id => new mongoose.Types.ObjectId(id)) },
+                userIds: { $all: userIds.map(id => new mongoose.Types.ObjectId(id)) },
             },
             {
                 $set: {
@@ -193,7 +191,7 @@ class ChatService {
         const chat = await Chats.findOneAndUpdate(
             {
                 isGroupChat: false,
-                userIds: { $in: userIds.map(id => new mongoose.Types.ObjectId(id)) },
+                userIds: { $all: userIds.map(id => new mongoose.Types.ObjectId(id)) },
             },
             {
                 $set: {
@@ -213,8 +211,18 @@ class ChatService {
         return chat
     }
 
-    async getMessages(chatId) {
-        const messages = await Messages.find({ chatId: chatId }).sort({ updatedAt: 1 }).populate("sender receiver chatId", '-otp -password')
+    async getMessages(chatId, currUser) {
+        let messages = []
+        const chat = await Chats.findById({ _id: chatId }).populate('deletedMessages.message')
+        if (!chat) {
+            throw new CustomError(400, `No chat found between these users`)
+        }
+        const [deletedMessage] = chat.deletedMessages.filter((item) => item.user.toString() == currUser._id.toString())
+        if (deletedMessage.message) {
+            messages = await Messages.find({ chatId: chatId, createdAt: { $gt: deletedMessage.message.createdAt } }).sort({ updatedAt: 1 }).populate("sender receiver chatId", '-otp -password')
+            return messages
+        }
+        messages = await Messages.find({ chatId: chatId }).sort({ updatedAt: 1 }).populate("sender receiver chatId", '-otp -password')
         return messages
     }
 

@@ -153,7 +153,7 @@ class ChatController {
         try {
             const currUser = req.user
             const { chatId } = req.params
-            const messages = await chatService.getMessages(chatId)
+            const messages = await chatService.getMessages(chatId, currUser)
             await chatService.markAllMsgsAsRead(chatId, currUser)
 
             res.status(200).json({
