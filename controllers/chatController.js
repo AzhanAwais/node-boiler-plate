@@ -22,8 +22,6 @@ class ChatController {
                     data: newChat
                 })
             }
-            const chatId = chat._id
-            await chatService.markAllMsgsAsRead(chatId, currUser)
 
             res.status(200).json({
                 message: "Chat fetch successfully",
@@ -153,8 +151,11 @@ class ChatController {
 
     async getMessages(req, res, next) {
         try {
+            const currUser = req.user
             const { chatId } = req.params
             const messages = await chatService.getMessages(chatId)
+            await chatService.markAllMsgsAsRead(chatId, currUser)
+
             res.status(200).json({
                 message: "Messages fetch successfully",
                 data: messages

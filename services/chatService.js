@@ -88,7 +88,7 @@ class ChatService {
         })
 
         await message.save()
-        await message.populate("sender receiver", '-otp -password')
+        await message.populate("sender receiver chatId", '-otp -password')
         await Chats.findByIdAndUpdate(
             { _id: chatId },
             {
@@ -122,7 +122,7 @@ class ChatService {
     }
 
     async markAllMsgsAsRead(chatId, currUser) {
-        await Chats.findByIdAndUpdate(
+        const chat = await Chats.findByIdAndUpdate(
             { _id: chatId },
             {
                 $set: {
@@ -132,9 +132,11 @@ class ChatService {
             },
             {
                 new: true,
-                arrayFilters: [{ 'elem.user': { $ne: currUser._id } }]
+                arrayFilters: [{ 'elem.user': { $eq: currUser._id } }]
             }
         )
+
+        console.log(chat,'=-------------')
     }
 
     async deleteChat(chatId, currUser) {
@@ -212,7 +214,7 @@ class ChatService {
     }
 
     async getMessages(chatId) {
-        const messages = await Messages.find({ chatId: chatId }).sort({ updatedAt: -1 }).populate("sender receiver chatId", '-otp -password')
+        const messages = await Messages.find({ chatId: chatId }).sort({ updatedAt: 1 }).populate("sender receiver chatId", '-otp -password')
         return messages
     }
 

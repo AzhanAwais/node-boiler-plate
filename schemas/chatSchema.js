@@ -16,8 +16,9 @@ const createGroupSchema = joi.object({
 const sendMessageSchema = joi.object({
     chatId: joi.string().required(),
     sender: joi.string().required(),
+    receiver: joi.string(),
     messageType: joi.number().valid(...messageTypesEnum).required(),
-    message: joi.string(),
+    message: joi.string().allow(''),
     images: joi.array().items(joi.string()),
     videos: joi.array().items(joi.string()),
     audio: joi.string(),
