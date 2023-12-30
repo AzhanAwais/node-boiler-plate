@@ -16,8 +16,8 @@ class SocketChat extends SocketConnection {
                 socket.broadcast.emit('getOnlineUser', { userId: currUserId })
             })
 
-            socket.on("getOfflineUser", async (userId) => {
-                socket.broadcast.emit('getOfflineUser', { userId: userId })
+            socket.on("getOfflineUser", async () => {
+                socket.broadcast.emit('getOfflineUser', { userId: currUserId })
             })
 
             socket.on("groupCreated", async (data) => {
