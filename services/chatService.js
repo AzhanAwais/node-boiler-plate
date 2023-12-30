@@ -229,7 +229,7 @@ class ChatService {
     async getChatUsers(currUser) {
         const chatUsers = await Chats.find({
             userIds: { $in: [currUser._id] }
-        }).populate("sender receiver", '-otp -password').sort({ createAt: -1 })
+        }).populate("sender receiver", '-otp -password').sort({ createdAt: -1 })
 
         return chatUsers
     }
@@ -258,6 +258,14 @@ class ChatService {
         const paginationService = new PaginationService(Users)
         const users = await paginationService.addPagination(findQuery, populateFields, projection)
         return users
+    }
+
+    async updateUserOnlineStatus(userId, status) {
+        const user = await Users.findByIdAndUpdate({ _id: userId }, { isOnline: status }, { new: true })
+        if (!user) {
+            throw new CustomError(400, `No user found`)
+        }
+        return user
     }
 }
 

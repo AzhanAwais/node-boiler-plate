@@ -9,9 +9,21 @@ class SocketChat extends SocketConnection {
     initSocketEvents() {
         const chatIo = this.io.of("/chat")
 
-        chatIo.on("connection", (socket) => {
+        chatIo.on("connection", async (socket) => {
+            const currUserId = socket?.handshake?.auth?._id
 
-     
+            socket.on("getOnlineUser", async () => {
+                socket.broadcast.emit('getOnlineUser', { userId: currUserId })
+            })
+
+            socket.on("getOfflineUser", async (userId) => {
+                socket.broadcast.emit('getOfflineUser', { userId: userId })
+            })
+
+            socket.on("groupCreated", async (data) => {
+                socket.broadcast.emit('groupCreated', { group: data.group })
+            })
+
         })
     }
 }

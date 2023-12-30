@@ -19,7 +19,7 @@ class JwtService {
         if (!authorizationHeader || !authorizationHeader.startsWith('Bearer')) {
             throw new CustomError(401, `Unauthorized or No token provided`)
         }
-        const token = authorizationHeader.split(' ')[2]
+        const token = authorizationHeader.split(' ')[1]
         return token
     }
 
