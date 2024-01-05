@@ -11,6 +11,7 @@ class SocketChat extends SocketConnection {
         const chatIo = this.io.of("/chat")
 
         chatIo.on("connection", async (socket) => {
+            console.log(socket.id)
             const currUser = socket?.handshake?.auth
 
             socket.on("getOnlineUser", async () => {
@@ -36,7 +37,6 @@ class SocketChat extends SocketConnection {
             socket.on("message", async (data) => {
                 const roomId = data.chatId.toString()
                 const chatUsersList = await getChatUsers(currUser)
-
                 socket.broadcast.emit('message', {
                     message: data.messageData,
                     chatUsersList: chatUsersList
