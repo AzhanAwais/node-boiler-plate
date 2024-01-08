@@ -37,7 +37,7 @@ class SocketChat extends SocketConnection {
             socket.on("message", async (data) => {
                 const roomId = data.chatId.toString()
                 const chatUsersList = await getChatUsers(currUser)
-                socket.broadcast.emit('message', {
+                socket.to(roomId).emit('message', {
                     message: data.messageData,
                     chatUsersList: chatUsersList
                 })
