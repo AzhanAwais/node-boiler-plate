@@ -11,15 +11,24 @@ class SocketChat extends SocketConnection {
         const chatIo = this.io.of("/chat")
 
         chatIo.on("connection", async (socket) => {
-            console.log(socket.id)
-            const currUser = socket?.handshake?.auth
 
-            socket.on("getOnlineUser", async () => {
+            socket.on("getOnlineUser", async (currUser) => {
                 socket.broadcast.emit('getOnlineUser', { userId: currUser._id })
             })
 
-            socket.on("getOfflineUser", async () => {
+            socket.on("getOfflineUser", async (currUser) => {
                 socket.broadcast.emit('getOfflineUser', { userId: currUser._id })
+            })
+
+            socket.on("startChat", async (data) => {
+                const currUser = data.currUser
+                const chatUsersList = await getChatUsers(currUser)
+
+                chatUsersList.forEach((item) => {
+                    let roomId = item._id.toString()
+                    socket.join(roomId)
+                })
+                socket.broadcast.emit('startChat', { chat: data.chat })
             })
 
             socket.on("groupCreated", async (data) => {
@@ -35,10 +44,23 @@ class SocketChat extends SocketConnection {
             })
 
             socket.on("message", async (data) => {
+                const currUser = data.currUser
                 const roomId = data.chatId.toString()
                 const chatUsersList = await getChatUsers(currUser)
-                socket.to(roomId).emit('message', {
+
+                chatIo.to(roomId).emit('message', {
                     message: data.messageData,
+                    chatUsersList: chatUsersList
+                })
+            })
+
+            socket.on("deleteMessage", async (data) => {
+                const currUser = data.currUser
+                const roomId = data.chatId.toString()
+                const chatUsersList = await getChatUsers(currUser)
+
+                chatIo.to(roomId).emit('deleteMessage', {
+                    message: data.message,
                     chatUsersList: chatUsersList
                 })
             })
