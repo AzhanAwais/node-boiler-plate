@@ -21,7 +21,7 @@ class PaginationService {
 
             queryBuilder.skip(skip).limit(perPage)
 
-            const totalRecords = await this.model.countDocuments()
+            const totalRecords = await this.model.countDocuments(findQuery)
             const totalPages = Math.ceil(totalRecords / perPage)
             pagination = { page, perPage, totalRecords, totalPages }
         }
