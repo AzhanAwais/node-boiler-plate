@@ -4,12 +4,13 @@ const authMiddleware = require("../middlewares/authMiddleware")
 const uploadFileMiddleware = require("../middlewares/uploadFileMiddleware")
 
 class BaseRoute {
-    constructor(model, validationSchema, populateFields) {
+    constructor(model, validationSchema, populateFields, projection) {
         this.model = model
         this.validationSchema = validationSchema
         this.populateFields = populateFields
+        this.projection = projection
         this.router = new express.Router()
-        this.baseController = new BaseController(this.model, this.validationSchema, this.populateFields)
+        this.baseController = new BaseController(this.model, this.validationSchema, this.populateFields, this.projection)
 
         this.router.post(`/`, authMiddleware, this.baseController.createOne.bind(this))
         this.router.post(`/bulk-upload`, authMiddleware, uploadFileMiddleware.single("file"), this.baseController.bulkUpload.bind(this))

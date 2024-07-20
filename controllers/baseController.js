@@ -3,10 +3,11 @@ const CustomError = require("../services/customError")
 const PaginationService = require("../services/paginationService")
 
 class BaseController {
-    constructor(model, validationSchema, populateFields) {
+    constructor(model, validationSchema, populateFields, projection) {
         this.model = model
         this.validationSchema = validationSchema
         this.populateFields = populateFields
+        this.projection = projection
     }
 
     async createOne(req, res, next) {
@@ -59,7 +60,7 @@ class BaseController {
         try {
             const query = req.query
             const paginationService = new PaginationService(this.model)
-            const { data, pagination } = await paginationService.addPagination(query)
+            const { data, pagination } = await paginationService.addPagination(query, this.populateFields, this.projection)
 
             res.status(200).json({
                 message: "Record fetch successfully",
@@ -75,7 +76,7 @@ class BaseController {
     async getOne(req, res, next) {
         try {
             const { id } = req.params
-            const data = await this.model.findById({ _id: id })
+            const data = await this.model.findById({ _id: id }).populate(this.populateFields)
 
             res.status(200).send({
                 message: "Record fetch successfully",
@@ -112,7 +113,7 @@ class BaseController {
     async deleteOne(req, res, next) {
         try {
             const { id } = req.params
-            const data = await this.model.findByIdAndUpdate({ _id: id }, { isDeleted: true }, { new: true })
+            const data = await this.model.findByIdAndDelete({ _id: id })
             if (!data) {
                 return next(new CustomError(404, "Record not found"))
             }
